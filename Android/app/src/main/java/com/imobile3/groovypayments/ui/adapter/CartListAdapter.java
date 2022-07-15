@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CartListAdapter
         extends RecyclerView.Adapter<CartListAdapter.ViewHolder> {
@@ -66,6 +67,15 @@ public class CartListAdapter
         holder.description.setText(rules.getOrderHistoryDescription());
         holder.description.setTextColor(
                 StateListHelper.getTextColorSelector(mContext, R.color.gray_down_pour));
+
+        // set Total and Date
+        holder.labelTotal.setText(
+                String.format(
+                        mContext.getString(R.string.price),
+                        rules.getTotal()
+                )
+        );
+        holder.labelDate.setText(rules.getFormattedDate(Locale.getDefault()));
     }
 
     @Override

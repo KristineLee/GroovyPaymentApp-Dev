@@ -125,4 +125,6 @@
         <item>Using Machine Learning&#8230;</item>
         <item>Counting beans&#8230;</item>
     </string-array>
+
+    <string name="price">$%1$s.</string>
 </resources>

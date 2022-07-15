@@ -8,8 +8,7 @@ import java.util.List;
 
 public class CartDataSource {
 
-    public CartDataSource() {
-    }
+    public CartDataSource() { }
 
     @WorkerThread
     public Result<List<Cart>> loadCarts() {

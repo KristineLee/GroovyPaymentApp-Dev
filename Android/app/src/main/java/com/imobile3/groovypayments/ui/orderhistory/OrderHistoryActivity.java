@@ -39,6 +39,12 @@ public class OrderHistoryActivity extends BaseActivity {
         mCartListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // TODO: Load order history (Cart data models) from the database
+        loadOrderHistory();
+    }
+
+    private void loadOrderHistory() {
+        getViewModel().getOrderHistory()
+                .observe(this, data -> mCartListAdapter.setItems(data));
     }
 
     @Override

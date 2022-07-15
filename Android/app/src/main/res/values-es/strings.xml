@@ -129,4 +129,6 @@
         <item>Usando Machine Learning&#8230;</item>
         <item>Contando frijoles&#8230;</item>
     </string-array>
+
+    <string name="price">$%1$s.</string>
 </resources>

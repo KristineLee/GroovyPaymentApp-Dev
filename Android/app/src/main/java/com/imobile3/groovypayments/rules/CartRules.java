@@ -25,9 +25,10 @@ import com.imobile3.groovypayments.data.model.Product;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Objects;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 
 /**
  * @author Kevin Schanz
@@ -90,5 +91,10 @@ public final class CartRules {
             }
         }
         return builder.toString();
+    }
+
+    public String getTotal() {
+        BigDecimal payment = new BigDecimal(mCart.getGrandTotal()).movePointLeft(2);
+        return payment.toString();
     }
 }
