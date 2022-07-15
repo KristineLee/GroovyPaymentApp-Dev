@@ -1,14 +1,17 @@
 package com.imobile3.groovypayments.ui.chart;
 
+import java.util.List;
 import android.os.Bundle;
-
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.enums.Align;
+import com.anychart.enums.LegendLayout;
+import com.anychart.charts.Pie;
+import com.anychart.chart.common.dataentry.DataEntry;
 import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.dialog.ProgressDialog;
-
 import androidx.lifecycle.ViewModelProviders;
-
-import java.util.List;
 
 public class PieChartActivity extends BaseActivity {
 
@@ -26,8 +29,24 @@ public class PieChartActivity extends BaseActivity {
     }
 
     // TODO: Update list parameterized type to chart library data wrapper
-    private void setPieChart(List<String> data) {
+    private void setPieChart(List<DataEntry> data) {
         // TODO: Populate the chart view
+        mProgressDialog.setMessage(
+                getResources().getString(
+                        R.string.daily_report_progress_message
+                )
+        );
+        mProgressDialog.show();
+
+        AnyChartView productChart = findViewById(R.id.productChart);
+        Pie pie = AnyChart.pie();
+        pie.data(data);
+        pie.labels().fontSize(12).fontDecoration("underline").position();
+        pie.legend().itemsLayout(LegendLayout.HORIZONTAL_EXPANDABLE).align(Align.CENTER);
+
+        // dismiss progress dialog
+        productChart.setOnRenderedListener(() -> mProgressDialog.dismiss());
+        productChart.setChart(pie);
     }
 
     @Override
@@ -44,3 +63,4 @@ public class PieChartActivity extends BaseActivity {
         mMainNavBar.showSubtitle(getString(R.string.daily_report_subtitle));
     }
 }
+
