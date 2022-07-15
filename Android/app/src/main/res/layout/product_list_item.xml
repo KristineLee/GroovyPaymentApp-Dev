@@ -18,27 +18,47 @@
         android:paddingStart="@dimen/padding_medium"
         android:paddingEnd="@dimen/padding_medium">
 
-        <View
-            android:id="@+id/icon"
+        <ImageView
+            android:id="@+id/ivProductIcon"
             android:layout_width="@dimen/product_list_icon_size"
             android:layout_height="@dimen/product_list_icon_size"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/product_list_icon_padding" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginEnd="@dimen/padding_medium"
+            android:background="@color/gray_silver" />
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            tools:background="#fe6">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/label"
+                android:id="@+id/tvProductName"
                 style="@style/TextView.Label.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="BBQ Bacon Cheeseburger"
-                tools:textColor="@color/red_cinnabar" />
+                tools:text="BBQ Bacon Cheeseburger"/>
+
+            <TextView
+                android:id="@+id/tvProductDescriptions"
+                style="@style/TextView.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/icon"
+                tools:text="Bacon Sandwich, Bowl of Cereal, Candy Bar, Cotton Candy, Hot Coffee, Iced Coffee, Novelty T-Shirt, Pair of Shoes, Comfortable Chair" />
         </LinearLayout>
     </LinearLayout>
 
