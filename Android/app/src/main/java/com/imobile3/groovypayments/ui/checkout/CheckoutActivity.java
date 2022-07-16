@@ -1,5 +1,6 @@
 package com.imobile3.groovypayments.ui.checkout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -56,6 +58,9 @@ public class CheckoutActivity extends BaseActivity {
     private View mPayWithCreditView;
     private TextView mLblCreditAmount;
     private Button mBtnPayWithCredit;
+
+    //Keypad
+    private View mKeypadContainer;
 
     // Android SDK Docs: https://stripe.com/docs/payments/accept-a-payment#android
     // Test Card Numbers: https://stripe.com/docs/testing
@@ -101,6 +106,7 @@ public class CheckoutActivity extends BaseActivity {
                 MainApplication.getInstance().getWebServiceConfig());
 
         loadPaymentTypes();
+        handleKeypad();
     }
 
     @Override
@@ -185,9 +191,9 @@ public class CheckoutActivity extends BaseActivity {
                         PaymentResponseHelper.transform(paymentIntent));
 
                 activity.showAlertDialog(
-                        "Payment completed",
+                        activity.getResources().getString(R.string.payment_completed),
                         JsonHelper.toPrettyJson(paymentIntent),
-                        "OK",
+                        activity.getResources().getString(R.string.common_ok),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -197,10 +203,11 @@ public class CheckoutActivity extends BaseActivity {
             } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
                 // Payment failed
                 activity.showAlertDialog(
-                        "Payment failed",
+                        activity.getResources().getString(R.string.payment_failed),
                         Objects.requireNonNull(paymentIntent.getLastPaymentError()).getMessage(),
-                        "Uh-Oh!",
-                        null);
+                        activity.getResources().getString(R.string.uhoh),
+                        null)
+                ;
             }
         }
 
@@ -212,8 +219,104 @@ public class CheckoutActivity extends BaseActivity {
             }
 
             // Payment request failed – allow retrying using the same payment method
-            activity.showAlertDialog("Error", e.toString(), "Woopsie!", null);
+            activity.showAlertDialog(
+                    activity.getResources().getString(R.string.error),
+                    e.toString(),
+                    activity.getResources().getString(R.string.woopsie),
+                    null
+            );
         }
+    }
+
+    private void handleKeypad() {
+        mKeypadContainer = mPayWithCashView.findViewById(R.id.keypad);
+        mKeypadContainer.findViewById(R.id.erase).setOnClickListener(v -> handleKeypadErase());
+        mKeypadContainer.findViewById(R.id.one).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_1)
+        ));
+        mKeypadContainer.findViewById(R.id.two).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_2)
+        ));
+        mKeypadContainer.findViewById(R.id.three).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_3)
+        ));
+        mKeypadContainer.findViewById(R.id.four).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_4)
+        ));
+        mKeypadContainer.findViewById(R.id.five).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_5)
+        ));
+        mKeypadContainer.findViewById(R.id.six).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_6)
+        ));
+        mKeypadContainer.findViewById(R.id.seven).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_7)
+        ));
+        mKeypadContainer.findViewById(R.id.eight).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_8)
+        ));
+        mKeypadContainer.findViewById(R.id.nine).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_9)
+        ));
+        mKeypadContainer.findViewById(R.id.zero).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_0)
+        ));
+        mKeypadContainer.findViewById(R.id.doubleZero).setOnClickListener(v -> handleKeypadNumber(
+                getResources().getString(R.string.keypad_00)
+        ));
+
+    }
+
+    private void handleKeypadErase(){
+        int cashAmountLength = mLblCashAmount.getText().length();
+        //String cashAmount = mLblCashAmount.getText().subSequence(0, cashAmountLength - 1);
+        if(cashAmountLength > 1) {
+            mLblCashAmount.setText(
+                    mLblCashAmount.getText().subSequence(
+                            0, cashAmountLength - 1
+                    )
+            );
+        }
+    }
+
+    private void handleKeypadNumber(CharSequence num){
+        mLblCashAmount.append(num);
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void handlePayWithCashClick() {
+
+        int cashAmountLength = mLblCashAmount.getText().length();
+        double amountWillPay = Double.parseDouble(
+                mLblCashAmount.getText().subSequence(1, cashAmountLength).toString()
+        );
+        double grandTotalFormat = new BigDecimal(
+                CartManager.getInstance().getCart().getGrandTotal()
+        ).movePointLeft(2).doubleValue();
+
+        double difference = amountWillPay - grandTotalFormat;
+        if(difference > 0) {
+            showAlertDialog(
+                    getResources().getString(R.string.over_paid_title),
+                    getResources().getString(R.string.over_paid_message) +
+                            String.format(
+                                    getResources().getString(R.string.price),
+                                    String.format("%.2f", difference)
+                            ),
+                    getResources().getString(R.string.common_ok),
+                    (View.OnClickListener) v -> handleCheckoutComplete()
+            );
+        }
+        else if(difference < 0){
+            showAlertDialog(
+                    getResources().getString(R.string.under_paid_title),
+                    getResources().getString(R.string.under_paid_message),
+                    getResources().getString(R.string.common_ok),
+                    null
+            );
+        }
+        else
+            handleCheckoutComplete();
     }
 
     private void handlePayWithCreditClick() {
@@ -231,9 +334,9 @@ public class CheckoutActivity extends BaseActivity {
                             dismissProgressDialog();
 
                             showAlertDialog(
-                                    "Client Secret Error",
-                                    "Error: " + message,
-                                    "OK",
+                                    getResources().getString(R.string.client_server_error),
+                                    getResources().getString(R.string.error2) + message,
+                                    getResources().getString(R.string.common_ok),
                                     null);
                         }
 
@@ -286,7 +389,6 @@ public class CheckoutActivity extends BaseActivity {
                 showPayWithCreditView();
                 break;
         }
-
         updateAmounts();
     }
 
@@ -295,13 +397,6 @@ public class CheckoutActivity extends BaseActivity {
                 .getFormattedGrandTotal(Locale.getDefault());
         mLblCashAmount.setText(formattedGrandTotal);
         mLblCreditAmount.setText(formattedGrandTotal);
-    }
-
-    private void handlePayWithCashClick() {
-        showAlertDialog(
-                R.string.common_under_construction,
-                R.string.under_construction_alert_message,
-                R.string.common_acknowledged);
     }
 
     //region (Animated) View Transitions
