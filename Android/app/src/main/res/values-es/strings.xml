@@ -131,4 +131,17 @@
     </string-array>
 
     <string name="price">$%1$s.</string>
+
+    <!-- Check Out -->
+    <string name="uhoh">Uh-Oh!</string>
+    <string name="error">Error</string>
+    <string name="error2">Error:</string>
+    <string name="woopsie">Woopsie!</string>
+    <string name="payment_failed">Pago fallido</string>
+    <string name="payment_completed">Pago completado</string>
+    <string name="client_server_error">Error de secreto de cliente</string>
+    <string name="over_paid_title">Pagado en exceso</string>
+    <string name="over_paid_message">Estabas pagando de más.\nCambiar debido a :&#160;</string>
+    <string name="under_paid_title">Poco pagado</string>
+    <string name="under_paid_message">Estás pagando de menos. Por favor, edite la cantidad!! Gracias!!"</string>
 </resources>
